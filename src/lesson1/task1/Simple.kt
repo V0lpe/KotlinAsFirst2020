@@ -94,7 +94,7 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double = TODO()
  */
 fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double
 {
-    var length = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)
+    val length = sqr(x2 - x1) + sqr(y2 - y1)
     return sqrt(length)
 }
 
@@ -116,8 +116,8 @@ fun thirdDigit(number: Int): Int = number / 100 % 10
  */
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int
 {
-    var time1 = hoursDepart * 60 + minutesDepart
-    var time2 = hoursArrive * 60 + minutesArrive
+    val time1 = hoursDepart * 60 + minutesDepart
+    val time2 = hoursArrive * 60 + minutesArrive
     return time2 - time1
 }
 
@@ -128,7 +128,14 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
+fun accountInThreeYears(initial: Int, percent: Int): Double
+{
+    val per = percent.toDouble() / 100
+    val firstYear = initial + initial * per;
+    val secondYear = firstYear + firstYear * per
+    val thirdYear = secondYear + secondYear.toDouble() * per
+    return thirdYear
+}
 
 /**
  * Простая (2 балла)
@@ -136,5 +143,7 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = number % 10 * 100 + number / 10 % 10 *10 + number / 100 % 10
+fun numberRevert(number: Int): Int =
+    number % 10 * 100 + number / 100 + number / 10 % 10 * 10
+
 
