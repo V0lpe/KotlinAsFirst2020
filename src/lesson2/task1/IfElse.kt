@@ -4,7 +4,10 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.abs
 import kotlin.math.sqrt
+
 
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
@@ -70,16 +73,14 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    if ((age % 100 < 10) || (age % 100 > 20)) {
-        return when (age % 10) {
-            1 -> "$age год"
-            2, 3, 4 -> "$age года"
-            0, 5, 6, 7, 8, 9 -> "$age лет"
-            else -> "ошибка"
-        }
+    if (age % 100 in 11..19)
+        return ("$age лет")
+    return when (age % 10) {
+        1 -> "$age год"
+        2, 3, 4 -> "$age года"
+        0, 5, 6, 7, 8, 9 -> "$age лет"
+        else -> "ошибка"
     }
-    else
-        return "$age лет"
 }
 
 /**
@@ -146,7 +147,7 @@ fun rookOrBishopThreatens(
     var danger = 0
     if (kingX == rookX || kingY == rookY)
         danger += 1
-    if (kotlin.math.abs(kingX - bishopX) == kotlin.math.abs(kingY - bishopY))
+    if (abs(kingX - bishopX) == abs(kingY - bishopY))
         danger += 2
     return danger
 }
@@ -180,25 +181,9 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    var secondCoordinateFL = 0
-    var firstCoordinateSL = 0
-    var secondCoordinateSL = 0
-    if (a < c) {
-        secondCoordinateFL = b
-        firstCoordinateSL = c
-        secondCoordinateSL = d
-    }
-    else {
-        secondCoordinateFL = d
-        firstCoordinateSL = a
-        secondCoordinateSL = b
-    }
-    if (secondCoordinateFL < firstCoordinateSL) return -1
-    if (secondCoordinateFL == firstCoordinateSL) return 0
-    else {
-        if (secondCoordinateSL > secondCoordinateFL)
-            return secondCoordinateFL - firstCoordinateSL
-        else
-            return secondCoordinateSL - firstCoordinateSL
-    }
+    if (a > d || c > b) return -1
+    if (a == d || b == c) return 0
+    val point1 = max(a,c)
+    val point2 = min(b,d)
+    return point2 - point1
 }
