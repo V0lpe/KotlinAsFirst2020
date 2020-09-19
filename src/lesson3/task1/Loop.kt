@@ -1,7 +1,9 @@
-@file:Suppress("UNUSED_PARAMETER")
+@file:Suppress("UNUSED_PARAMETER", "UNREACHABLE_CODE")
 
 package lesson3.task1
 
+import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -80,14 +82,27 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int {
+    if (n == 0) return 0
+    if (n == 1) return 1
+    return fib(n - 1) + fib(n - 2)
+}
 
 /**
  * Простая (2 балла)
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var div = 1
+    for (i: Int in 2..n) {
+        if (n % i == 0) {
+            div = i
+            break
+        }
+    }
+    return div
+}
 
 /**
  * Простая (2 балла)
@@ -138,7 +153,16 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    for (i in m..n) {
+        var k = sqrt(i.toDouble())
+        if (k % 1 == 0.0) {
+            return true
+            break
+        }
+    }
+    return false
+}
 
 /**
  * Средняя (3 балла)
@@ -168,7 +192,17 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var digit = n % 10
+    var number = n / 10
+    while (number != 0) {
+        if (number % 10 != digit)
+            return true
+        digit = number % 10
+        number /= 10
+    }
+    return false
+}
 
 /**
  * Средняя (4 балла)
@@ -179,7 +213,22 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var value = x
+    while (value !in -PI..PI) {
+        value -= 2 * PI
+    }
+    var sumSeries = value
+    var memberSeries = value
+    var i = 1
+    while (abs(memberSeries) > eps) {
+        memberSeries *= (-1) * value * value / ((i + 1) * (i + 2))
+        sumSeries += memberSeries
+        i += 2
+    }
+    return sumSeries
+}
+
 
 /**
  * Средняя (4 балла)
@@ -212,4 +261,28 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var sumDigits = 1
+    var digitsNum = 0
+    var fibNum1 = 0
+    var fibNum2 = 1
+    var fibNum = 0
+    while (sumDigits < n) {
+        fibNum = fibNum1 + fibNum2
+        fibNum1 = fibNum2
+        fibNum2 = fibNum
+        digitsNum = 0
+        while (fibNum != 0) {
+            ++digitsNum
+            fibNum /= 10
+        }
+        sumDigits += digitsNum
+    }
+    if (sumDigits > n) {
+        while (sumDigits != n) {
+            fibNum2 /= 10
+            --sumDigits
+        }
+    }
+    return fibNum2 % 10
+}
