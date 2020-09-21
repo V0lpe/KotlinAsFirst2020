@@ -83,9 +83,15 @@ fun digitNumber(n: Int): Int = TODO()
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    if (n == 0) return 0
-    if (n == 1) return 1
-    return fib(n - 1) + fib(n - 2)
+    var fibNum1 = 0
+    var fibNum2 = 1
+    var fibNum = 0
+    for (i in 1 until n) {
+        fibNum = fibNum1 + fibNum2
+        fibNum1 = fibNum2
+        fibNum2 = fibNum
+    }
+    return fibNum2
 }
 
 /**
@@ -94,14 +100,11 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var div = 1
-    for (i: Int in 2..n) {
-        if (n % i == 0) {
-            div = i
-            break
-        }
+    for (i in 2..n / 2) {
+        if (n % i == 0)
+            return i
     }
-    return div
+    return n
 }
 
 /**
@@ -155,10 +158,9 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for (i in m..n) {
-        var k = sqrt(i.toDouble())
+        val k = sqrt(i.toDouble())
         if (k % 1 == 0.0) {
             return true
-            break
         }
     }
     return false
@@ -198,7 +200,6 @@ fun hasDifferentDigits(n: Int): Boolean {
     while (number != 0) {
         if (number % 10 != digit)
             return true
-        digit = number % 10
         number /= 10
     }
     return false
@@ -215,9 +216,8 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var value = x
-    while (value !in -PI..PI) {
-        value -= 2 * PI
-    }
+    if (value !in -PI..PI)
+        value %= 2 * PI
     var sumSeries = value
     var memberSeries = value
     var i = 1
