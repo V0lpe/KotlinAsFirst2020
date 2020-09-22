@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -100,7 +101,8 @@ fun fib(n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..n / 2) {
+    val range = sqrt(n.toDouble())
+    for (i in 2..range.toInt()) {
         if (n % i == 0)
             return i
     }
@@ -195,7 +197,7 @@ fun isPalindrome(n: Int): Boolean = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var digit = n % 10
+    val digit = n % 10
     var number = n / 10
     while (number != 0) {
         if (number % 10 != digit)
@@ -215,9 +217,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var value = x
-    if (value !in -PI..PI)
-        value %= 2 * PI
+    val value = x % (2 * PI)
     var sumSeries = value
     var memberSeries = value
     var i = 1
