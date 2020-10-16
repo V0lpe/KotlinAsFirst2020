@@ -1,8 +1,9 @@
-@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
+@file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence", "IMPLICIT_CAST_TO_ANY")
 
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
 import kotlin.math.sqrt
 
 // Урок 4: списки
@@ -120,7 +121,16 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double {
+    var absV = 0.0
+    return if (v.isNotEmpty()) {
+        for (element in v) {
+            absV += sqr(element)
+        }
+        sqrt(absV)
+    } else
+        absV
+}
 
 /**
  * Простая (2 балла)
@@ -146,7 +156,14 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  * представленные в виде списков a и b. Скалярное произведение считать по формуле:
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun times(a: List<Int>, b: List<Int>): Int = TODO()
+fun times(a: List<Int>, b: List<Int>): Int {
+    var scalar = 0
+    if (a.isNotEmpty()) {
+        for (i in a.indices)
+            scalar += a[i] * b[i]
+    }
+    return scalar
+}
 
 /**
  * Средняя (3 балла)
@@ -168,7 +185,16 @@ fun polynom(p: List<Int>, x: Int): Int = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    var sum = 0
+    if (list.isNotEmpty()) {
+        for (i in list.indices) {
+            sum += list[i]
+            list[i] = sum
+        }
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -177,7 +203,22 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+
+fun factorize(n: Int): List<Int> {
+    var number = n
+    var multiplier = 2
+    var multipl = mutableListOf<Int>()
+    while (number > 1) {
+        if (number % multiplier == 0) {
+            multipl.add(multiplier)
+            number /= multiplier
+        } else {
+            ++multiplier
+        }
+    }
+    multipl.sort()
+    return multipl
+}
 
 /**
  * Сложная (4 балла)
@@ -186,7 +227,10 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String {
+    val multipliers = factorize(n)
+    return multipliers.joinToString(separator = "*")
+}
 
 /**
  * Средняя (3 балла)
@@ -241,7 +285,20 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+
+fun roman(n: Int): String {
+    val decNum = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val romNum = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    var number = n
+    var romNumber = ""
+    for (i in 0..12) {
+        while (number >= decNum[i]) {
+            number -= decNum[i]
+            romNumber += romNum[i]
+        }
+    }
+    return romNumber
+}
 
 /**
  * Очень сложная (7 баллов)
@@ -250,4 +307,85 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun toRus(num: Int, partOfNum: Int): String {
+    var number = num
+    val digits = listOf<String>(
+        "один", "два", "три", "четыре", "пять", "шесть",
+        "семь", "восемь", "девять", "одна", "две", "девяно"
+    )
+    val teensDigit = listOf<String>(
+        "четыр", "пят", "шест", "сем", "восем", "девят"
+    )
+    val teens = "надцать"
+    val tens = listOf<String>("десят", "дцать", "сорок")
+    val hundreds = listOf<String>("сто", "сти", "ста", "сот")
+    val thousands = listOf<String>("тысяча", "тысячи", "тысяч")
+    val space = " "
+    var numberInRus = ""
+    numberInRus += when (number / 100) {
+        1 -> hundreds[0]
+        2 -> digits[10] + hundreds[1]
+        in 3..4 -> digits[number / 100 - 1] + hundreds[2]
+        in 5..9 -> digits[number / 100 - 1] + hundreds[3]
+        else -> ""
+    }
+    number %= 100
+    if (number != 0 && numberInRus != "") {
+        if (numberInRus[numberInRus.lastIndex] != ' ')
+            numberInRus += space
+    }
+    if (number / 10 == 1) {
+        numberInRus += when (number % 10) {
+            1 -> digits[number % 10 - 1] + teens
+            2 -> digits[10] + teens
+            3 -> digits[number % 10 - 1] + teens
+            in 4..9 -> teensDigit[number % 10 - 4] + teens
+            else -> "десять"
+        }
+        if (partOfNum == 1)
+            numberInRus += space + thousands[2]
+        return numberInRus
+    } else {
+        numberInRus += when (number / 10) {
+            in 2..3 -> digits[number / 10 - 1] + tens[1]
+            4 -> tens[2]
+            in 5..8 -> digits[number / 10 - 1] + tens[0]
+            9 -> digits[11] + hundreds[0]
+            else -> ""
+        }
+    }
+    number %= 10
+    if (number != 0 && numberInRus != "") {
+        if (numberInRus[numberInRus.lastIndex] != ' ')
+            numberInRus += space
+    }
+    if (partOfNum == 1) {
+        if (number != 0) {
+            when (number % 10) {
+                1 -> numberInRus += digits[9] + space + thousands[0]
+                2 -> numberInRus += digits[10] + space + thousands[1]
+                in 3..4 -> numberInRus += digits[number - 1] + space + thousands[1]
+                in 5..9 -> numberInRus += digits[number - 1] + space + thousands[2]
+                else -> ""
+            }
+        } else {
+            if (numberInRus[numberInRus.lastIndex] != ' ')
+                numberInRus += space
+            numberInRus += thousands[2]
+        }
+    } else {
+        if (number != 0)
+            numberInRus += digits[number - 1]
+    }
+    return numberInRus
+}
+
+fun russian(n: Int): String {
+    var numberInRus = ""
+    if (n >= 1000)
+        numberInRus += toRus(n / 1000, 1)
+    if (n % 1000 != 0 && numberInRus != "")
+        numberInRus += " "
+    numberInRus += toRus(n % 1000, 2)
+    return numberInRus
+}

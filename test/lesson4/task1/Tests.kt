@@ -222,6 +222,7 @@ class Tests {
     @Tag("5")
     fun roman() {
         assertEquals("I", roman(1))
+        assertEquals("VIII", roman(8))
         assertEquals("MMM", roman(3000))
         assertEquals("MCMLXXVIII", roman(1978))
         assertEquals("DCXCIV", roman(694))
@@ -229,9 +230,21 @@ class Tests {
     }
 
     @Test
+    @Tag("6")
+    fun toRus() {
+        assertEquals("двести тысяч", toRus(200, 1))
+        assertEquals("сто девятнадцать тысяч", toRus(119, 1))
+        assertEquals("триста семьдесят пять", toRus(375, 2))
+        assertEquals("пятьсот десять", toRus(510, 2))
+        assertEquals("двенадцать", toRus(12, 2))
+        assertEquals("двадцать две тысячи", toRus(22, 1))
+    }
+
+    @Test
     @Tag("7")
     fun russian() {
         assertEquals("триста семьдесят пять", russian(375))
+        assertEquals("пятьсот десять", russian(510))
         assertEquals("двадцать две тысячи девятьсот шестьдесят четыре", russian(22964))
         assertEquals("сто девятнадцать тысяч пятьсот восемь", russian(119508))
         assertEquals("две тысячи три", russian(2003))
