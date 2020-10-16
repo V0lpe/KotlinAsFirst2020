@@ -230,7 +230,6 @@ class Tests {
     }
 
     @Test
-    @Tag("6")
     fun toRus() {
         assertEquals("двести тысяч", toRus(200, 1))
         assertEquals("сто девятнадцать тысяч", toRus(119, 1))
