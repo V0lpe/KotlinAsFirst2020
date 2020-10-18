@@ -158,10 +158,8 @@ fun center(list: MutableList<Double>): MutableList<Double> = TODO()
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var scalar = 0
-    if (a.isNotEmpty()) {
-        for (i in a.indices)
-            scalar += a[i] * b[i]
-    }
+    for (i in a.indices)
+        scalar += a[i] * b[i]
     return scalar
 }
 
@@ -187,11 +185,9 @@ fun polynom(p: List<Int>, x: Int): Int = TODO()
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     var sum = 0
-    if (list.isNotEmpty()) {
-        for (i in list.indices) {
-            sum += list[i]
-            list[i] = sum
-        }
+    for (i in list.indices) {
+        sum += list[i]
+        list[i] = sum
     }
     return list
 }
@@ -207,17 +203,16 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     var number = n
     var multiplier = 2
-    var multipl = mutableListOf<Int>()
+    val multipliers = mutableListOf<Int>()
     while (number > 1) {
         if (number % multiplier == 0) {
-            multipl.add(multiplier)
+            multipliers.add(multiplier)
             number /= multiplier
         } else {
             ++multiplier
         }
     }
-    multipl.sort()
-    return multipl
+    return multipliers
 }
 
 /**
