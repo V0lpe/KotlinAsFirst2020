@@ -359,8 +359,16 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
 fun maxPriceTreasure(treasures: Map<String, Pair<Int, Int>>, capacity: Int): String {
     var maxPrice = 0
     var name = ""
+    var sumWeight = 0
+    var sumPrice = 0
+    for ((first, second) in treasures) {
+        sumWeight += second.first
+        sumPrice += second.second
+    }
     for ((first, second) in treasures) {
         if (second.second > maxPrice && second.first <= capacity) {
+            if (second.first >= sumWeight - second.first && second.second < sumPrice - second.second)
+                continue
             maxPrice = second.second
             name = first
         }
