@@ -334,41 +334,37 @@ class Tests {
     }
 
     @Test
-    fun maxPriceTreasure() {
+    fun greatestBenefit() {
         assertEquals(
             "Кубок",
-            maxPriceTreasure(
+            greatestBenefit(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 850
             )
         )
         assertEquals(
             "Слиток",
-            maxPriceTreasure(
+            greatestBenefit(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 1200
             )
         )
         assertEquals(
-            setOf("13", "12", "11", "10", "8", "7", "6", "5", "4", "3", "2", "1", "0"),
+            setOf("6", "0"),
             bagPacking(
                 mapOf(
-                    "0" to (1 to 1),
+                    "0" to (1 to 129),
                     "1" to (1 to 1),
                     "2" to (1 to 1),
                     "3" to (1 to 59),
                     "4" to (1 to 1),
-                    "5" to (1 to 1),
-                    "6" to (148 to 148),
+                    "5" to (2 to 330),
+                    "6" to (1 to 171),
                     "7" to (1 to 1),
-                    "8" to (199 to 148),
-                    "9" to (406 to 231),
-                    "10" to (1 to 1),
-                    "11" to (1 to 1),
-                    "12" to (1 to 1),
-                    "13" to (1 to 1)
+                    "8" to (1 to 1),
+                    "9" to (1 to 1)
                 ),
-                420
+                2
             )
         )
     }

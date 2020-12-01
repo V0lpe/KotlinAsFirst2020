@@ -356,20 +356,16 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun maxPriceTreasure(treasures: Map<String, Pair<Int, Int>>, capacity: Int): String {
-    var maxPrice = 0
+fun greatestBenefit(treasures: Map<String, Pair<Int, Int>>, capacity: Int): String {
+    val nameBenefit = mutableMapOf<String, Double>()
     var name = ""
-    var sumWeight = 0
-    var sumPrice = 0
+    var maxBenefit = 0.0
     for ((first, second) in treasures) {
-        sumWeight += second.first
-        sumPrice += second.second
+        nameBenefit[first] = second.second.toDouble() / second.first
     }
     for ((first, second) in treasures) {
-        if (second.second > maxPrice && second.first <= capacity) {
-            if (second.first >= sumWeight - second.first && second.second < sumPrice - second.second)
-                continue
-            maxPrice = second.second
+        if (nameBenefit.getValue(first) > maxBenefit && second.first <= capacity) {
+            maxBenefit = nameBenefit.getValue(first)
             name = first
         }
     }
@@ -382,7 +378,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     var name = ""
     var availableSpace = capacity
     while (true) {
-        name = maxPriceTreasure(mapTreasure, availableSpace)
+        name = greatestBenefit(mapTreasure, availableSpace)
         if (name == "")
             break
         nameTreasure.add(name)
