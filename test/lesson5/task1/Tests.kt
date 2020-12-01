@@ -209,6 +209,10 @@ class Tests {
             mapOf("MSFT" to 150.0, "NFLX" to 45.0),
             averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0, "NFLX" to 50.0))
         )
+        assertEquals(
+            mapOf("" to 0.25),
+            averageStockPrice(listOf("" to 0.0, "" to 0.0, "" to 0.0, "" to 1.0))
+        )
     }
 
     @Test
@@ -224,6 +228,13 @@ class Tests {
             "Мария",
             findCheapestStuff(
                 mapOf("Мария" to ("печенье" to 20.0), "Орео" to ("печенье" to 100.0)),
+                "печенье"
+            )
+        )
+        assertEquals(
+            "Орео",
+            findCheapestStuff(
+                mapOf("Орео" to ("печенье" to Double.MAX_VALUE)),
                 "печенье"
             )
         )
@@ -316,6 +327,28 @@ class Tests {
             Pair(-1, -1),
             findSumOfTwo(listOf(1, 2, 3), 6)
         )
+        assertEquals(
+            Pair(0, 1),
+            findSumOfTwo(listOf(0, 0), 0)
+        )
+    }
+
+    @Test
+    fun maxPriceTreasure() {
+        assertEquals(
+            "Кубок",
+            maxPriceTreasure(
+                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
+                850
+            )
+        )
+        assertEquals(
+            "Слиток",
+            maxPriceTreasure(
+                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
+                1200
+            )
+        )
     }
 
     @Test
@@ -333,6 +366,13 @@ class Tests {
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 450
+            )
+        )
+        assertEquals(
+            setOf("Кубок", "Чаша"),
+            bagPacking(
+                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000), "Чаша" to (50 to 100)),
+                550
             )
         )
     }

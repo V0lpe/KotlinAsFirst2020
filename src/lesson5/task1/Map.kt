@@ -183,12 +183,12 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val mapPrice = mutableMapOf<String, MutableList<Double>>()
     val averagePrice = mutableMapOf<String, Double>()
-    for ((first, second) in stockPrices) {
-        if (averagePrice.containsKey(first)) {
-            averagePrice[first] = (averagePrice.getValue(first) + second) / 2
-        } else
-            averagePrice[first] = second
+    for ((first, second) in stockPrices)
+        mapPrice.getOrPut(first) { mutableListOf() }.add(second)
+    for ((first, second) in mapPrice) {
+        averagePrice[first] = second.sum() / second.size
     }
     return averagePrice
 }
@@ -212,7 +212,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     var name: String? = null
     var minPrice = Double.MAX_VALUE
     for ((product, price) in stuff) {
-        if (price.first == kind && price.second < minPrice) {
+        if (price.first == kind && price.second <= minPrice) {
             name = product
             minPrice = price.second
         }
@@ -313,14 +313,23 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val numbers = list.toSet()
+    val IndexNumber = mutableMapOf<Int, Int>()
     var firstIndex = -1
     var secondIndex = -1
     for (i in list.indices) {
-        if (numbers.contains(number - list[i]) && (number - list[i]) != list[i]) {
-            firstIndex = i;
-            secondIndex = numbers.indexOf(number - list[i])
+        if (IndexNumber.containsValue(list[i])) {
+            secondIndex = i
             break
+        } else {
+            IndexNumber[i] = number - list[i]
+        }
+    }
+    if (secondIndex != -1) {
+        for ((first, second) in IndexNumber) {
+            if (second == list[secondIndex]) {
+                firstIndex = first
+                break
+            }
         }
     }
     return Pair(firstIndex, secondIndex)
@@ -347,4 +356,30 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun maxPriceTreasure(treasures: Map<String, Pair<Int, Int>>, capacity: Int): String {
+    var maxPrice = 0
+    var name = ""
+    for ((first, second) in treasures) {
+        if (second.second > maxPrice && second.first <= capacity) {
+            maxPrice = second.second
+            name = first
+        }
+    }
+    return name
+}
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val mapTreasure = treasures.toMutableMap()
+    val nameTreasure = mutableSetOf<String>()
+    var name = ""
+    var availableSpace = capacity
+    while (true) {
+        name = maxPriceTreasure(mapTreasure, availableSpace)
+        if (name == "")
+            break
+        nameTreasure.add(name)
+        availableSpace -= mapTreasure.getValue(name).first
+        mapTreasure.remove(name)
+    }
+    return nameTreasure
+}
