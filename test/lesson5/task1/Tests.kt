@@ -334,42 +334,6 @@ class Tests {
     }
 
     @Test
-    fun greatestBenefit() {
-        assertEquals(
-            "Кубок",
-            greatestBenefit(
-                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
-                850
-            )
-        )
-        assertEquals(
-            "Слиток",
-            greatestBenefit(
-                mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
-                1200
-            )
-        )
-        assertEquals(
-            setOf("6", "0"),
-            bagPacking(
-                mapOf(
-                    "0" to (1 to 129),
-                    "1" to (1 to 1),
-                    "2" to (1 to 1),
-                    "3" to (1 to 59),
-                    "4" to (1 to 1),
-                    "5" to (2 to 330),
-                    "6" to (1 to 171),
-                    "7" to (1 to 1),
-                    "8" to (1 to 1),
-                    "9" to (1 to 1)
-                ),
-                2
-            )
-        )
-    }
-
-    @Test
     @Tag("8")
     fun bagPacking() {
         assertEquals(
@@ -391,6 +355,24 @@ class Tests {
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000), "Чаша" to (50 to 100)),
                 550
+            )
+        )
+        assertEquals(
+            setOf("9", "8", "7", "6", "5", "4", "3", "2", "0"),
+            bagPacking(
+                mapOf(
+                    "0" to (148 to 217),
+                    "1" to (469 to 216),
+                    "2" to (148 to 168),
+                    "3" to (1 to 59),
+                    "4" to (1 to 1),
+                    "5" to (1 to 1),
+                    "6" to (1 to 148),
+                    "7" to (1 to 1),
+                    "8" to (149 to 243),
+                    "9" to (1 to 1)
+                ),
+                914
             )
         )
     }

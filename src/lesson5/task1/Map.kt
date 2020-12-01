@@ -356,16 +356,12 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun greatestBenefit(treasures: Map<String, Pair<Int, Int>>, capacity: Int): String {
-    val nameBenefit = mutableMapOf<String, Double>()
+fun greatestBenefit(treasures: Map<String, Pair<Int, Int>>, benefits: Map<String, Double>, capacity: Int): String {
     var name = ""
     var maxBenefit = 0.0
     for ((first, second) in treasures) {
-        nameBenefit[first] = second.second.toDouble() / second.first
-    }
-    for ((first, second) in treasures) {
-        if (nameBenefit.getValue(first) > maxBenefit && second.first <= capacity) {
-            maxBenefit = nameBenefit.getValue(first)
+        if (benefits.getValue(first) > maxBenefit && second.first <= capacity) {
+            maxBenefit = benefits.getValue(first)
             name = first
         }
     }
@@ -374,16 +370,21 @@ fun greatestBenefit(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Stri
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val mapTreasure = treasures.toMutableMap()
+    val nameBenefit = mutableMapOf<String, Double>()
     val nameTreasure = mutableSetOf<String>()
     var name = ""
     var availableSpace = capacity
+    for ((first, second) in treasures) {
+        nameBenefit[first] = second.second.toDouble() / second.first
+    }
     while (true) {
-        name = greatestBenefit(mapTreasure, availableSpace)
+        name = greatestBenefit(mapTreasure, nameBenefit, availableSpace)
         if (name == "")
             break
         nameTreasure.add(name)
         availableSpace -= mapTreasure.getValue(name).first
         mapTreasure.remove(name)
+        nameBenefit.remove(name)
     }
     return nameTreasure
 }
