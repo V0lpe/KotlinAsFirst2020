@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import java.lang.IllegalArgumentException as IllegalArgumentException
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -74,7 +76,41 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val parts = str.split(" ")
+    if (parts.size != 3)
+        return ""
+    try {
+        val day = parts[0].toInt()
+        var month = 0
+        val year = parts[2].toInt()
+        month = when (parts[1]) {
+            "января" -> 1
+            "февраля" -> 2
+            "марта" -> 3
+            "апреля" -> 4
+            "мая" -> 5
+            "июня" -> 6
+            "июля" -> 7
+            "августа" -> 8
+            "сентября" -> 9
+            "октября" -> 10
+            "ноября" -> 11
+            "декабря" -> 12
+            else -> 0
+        }
+        return if (day in 1..31 && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) ||
+            day in 1..30 && (month == 4 || month == 6 || month == 9 || month == 11) ||
+            day in 1..28 && month == 2 ||
+            day == 29 && month == 2 && (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
+        )
+            String.format("%02d.%02d.%d", day, month, year)
+        else
+            ""
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -114,7 +150,20 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    val parts = jumps.split(" ")
+    val results = mutableListOf<Int>()
+    return try {
+        for (i in parts.indices) {
+            if (parts[i] != "-" && parts[i] != "%")
+                results.add(parts[i].toInt())
+        }
+        results.max() ?: -1
+    } catch (e: NumberFormatException) {
+        -1
+    }
+
+}
 
 /**
  * Сложная (6 баллов)
@@ -136,9 +185,29 @@ fun bestHighJump(jumps: String): Int = TODO()
  * использующее целые положительные числа, плюсы и минусы, разделённые пробелами.
  * Наличие двух знаков подряд "13 + + 10" или двух чисел подряд "1 2" не допускается.
  * Вернуть значение выражения (6 для примера).
- * Про нарушении формата входной строки бросить исключение IllegalArgumentException
+ * При нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val parts = expression.split(" ")
+    var result = 0
+    try {
+        result = parts[0].toInt()
+        for (i in parts.indices) {
+            if (parts[i] == "+")
+                result += parts[i + 1].toInt()
+            if (parts[i] == "-")
+                result -= parts[i + 1].toInt()
+            if (parts[i] != "+" && parts[i] != "-") {
+                for (num in parts[i])
+                    if (num.toInt() !in 48..58)
+                        throw IllegalArgumentException("Message")
+            }
+        }
+    } catch (e: NumberFormatException) {
+        throw IllegalArgumentException("Message")
+    }
+    return result
+}
 
 /**
  * Сложная (6 баллов)
@@ -175,7 +244,33 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    val numbers = mutableListOf<Int>()
+    var result = 0
+    for (symbol in roman) {
+        when (symbol) {
+            'I' -> numbers.add(1)
+            'V' -> numbers.add(5)
+            'X' -> numbers.add(10)
+            'L' -> numbers.add(50)
+            'C' -> numbers.add(100)
+            'D' -> numbers.add(500)
+            'M' -> numbers.add(1000)
+            else -> return -1
+        }
+    }
+    if (numbers.size > 1) {
+        for (i in 0..numbers.size - 2) {
+            if (numbers[i + 1] / numbers[i] == 5 || numbers[i + 1] / numbers[i] == 10)
+                result -= numbers[i]
+            else
+                result += numbers[i]
+        }
+        result += numbers[numbers.size - 1]
+    } else
+        result += numbers[0]
+    return result
+}
 
 /**
  * Очень сложная (7 баллов)
