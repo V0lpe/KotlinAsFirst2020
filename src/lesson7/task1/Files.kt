@@ -615,9 +615,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             if (rank(numerator) == rank(sub))
                 ++space
             numerator -= sub
-            if (numerator == 0)
+            if (numerator == 0 || numerator == lhv)
                 --space
-            if (rank(numerator) == rank(sub) && lhv > 9)
+            if (rank(numerator) == rank(sub))
                 ++space
             if (rank(numerator) < rank(sub))
                 space += rank(sub) - rank(numerator)
