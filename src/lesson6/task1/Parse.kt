@@ -247,7 +247,7 @@ fun mostExpensive(description: String): String = TODO()
 fun fromRoman(roman: String): Int {
     val numbers = mutableListOf<Int>()
     var result = 0
-    if (roman.isEmpty)
+    if (roman == "")
         return -1
     for (symbol in roman) {
         when (symbol) {
