@@ -63,7 +63,23 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            if (line.isNotEmpty()) {
+                if (line[0] != '_' && line[line.length - 1] != '_') {
+                    it.write(line)
+                    it.newLine()
+                } else {
+                    if (line[1] == '-' || line[line.length - 2] == '_') {
+                        it.write(line)
+                        it.newLine()
+                    }
+                }
+            } else {
+                it.newLine()
+            }
+        }
+    }
 }
 
 /**
@@ -75,7 +91,37 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun allContains(str: String, searchStr: String): Int {
+    var count = 0
+    var coincidences = 0
+    if (searchStr.length > str.length)
+        return 0
+    for (i in 0..str.length - searchStr.length) {
+        coincidences = 0
+        for (j in searchStr.indices) {
+            if (str[i + j] != searchStr[j])
+                break
+            ++coincidences
+        }
+        if (coincidences == searchStr.length)
+            ++count
+    }
+    return count
+}
+
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val countOfLine = mutableMapOf<String, Int>()
+    var count = 0
+    for (str in substrings) {
+        count = 0
+        for (line in File(inputName).readLines()) {
+            if (allContains(line.toLowerCase(), str.toLowerCase()) != 0)
+                count += allContains(line.toLowerCase(), str.toLowerCase())
+        }
+        countOfLine[str] = count
+    }
+    return countOfLine
+}
 
 
 /**
@@ -144,7 +190,52 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use {
+        var maxLength = 0
+        var wordsLength = 0
+        var countSpace = 0
+        var words = listOf<String>()
+        var spaceBetweenWords = 0
+        var remainderSpace = 0
+        for (line in File(inputName).readLines()) {
+            if (maxLength < line.trim().length)
+                maxLength = line.trim().length
+        }
+        for (line in File(inputName).readLines()) {
+            wordsLength = 0
+            countSpace = 0
+            words = line.trim().split(" ")
+            if (words.isEmpty()) {
+                it.newLine()
+                continue
+            }
+            if (words.size == 1) {
+                it.write(words[0])
+                it.newLine()
+                continue
+            }
+            for (parts in words) {
+                wordsLength += parts.length
+            }
+            countSpace = maxLength - wordsLength
+            spaceBetweenWords = countSpace / (words.size - 1)
+            remainderSpace = countSpace % (words.size - 1)
+            for (j in words.indices) {
+                it.write(words[j])
+                if (j != words.size - 1) {
+                    for (k in 0 until spaceBetweenWords) {
+                        it.write(" ")
+                    }
+                }
+                if (remainderSpace != 0) {
+                    it.write(" ")
+                    --remainderSpace
+                }
+            }
+            it.newLine()
+        }
+    }
+
 }
 
 /**
@@ -268,15 +359,15 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -319,65 +410,65 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <p>
-      <ul>
-        <li>
-          Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-        </li>
-        <li>
-          Салат Оливье
-          <ol>
-            <li>Мясо
-              <ul>
-                <li>Или колбаса</li>
-              </ul>
-            </li>
-            <li>Майонез</li>
-            <li>Картофель</li>
-            <li>Что-то там ещё</li>
-          </ol>
-        </li>
-        <li>Помидоры</li>
-        <li>Фрукты
-          <ol>
-            <li>Бананы</li>
-            <li>Яблоки
-              <ol>
-                <li>Красные</li>
-                <li>Зелёные</li>
-              </ol>
-            </li>
-          </ol>
-        </li>
-      </ul>
-    </p>
-  </body>
+<body>
+<p>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>Или колбаса</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>Фрукты
+<ol>
+<li>Бананы</li>
+<li>Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</p>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -404,23 +495,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
@@ -434,21 +525,138 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
-fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+fun rank(num: Int): Int {
+    var n = num
+    var count = 0
+    if (num == 0)
+        return 1
+    while (n > 0) {
+        n /= 10
+        ++count
+    }
+    return count
 }
 
+fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
+    File(outputName).bufferedWriter().use {
+        val number = mutableListOf<Int>()
+        var num1 = lhv
+        var divider = 0
+        var subtr = 0
+        var spaceCount = 0
+        var line = 0
+        while (num1 > 0) {
+            number.add(num1 % 10)
+            num1 /= 10
+        }
+        if (lhv < rhv) {
+            if (lhv <= 9)
+                it.write(" ")
+            it.write("$lhv | $rhv")
+            it.newLine()
+            for (j in 1..rank(lhv) - 2)
+                it.write(" ")
+            it.write("-0")
+            for (k in 1..3)
+                it.write(" ")
+            it.write("0")
+            it.newLine()
+            for (j in 1..rank(lhv) - 2)
+                it.write(" ")
+            it.write("--")
+            it.newLine()
+            if (lhv <= 9)
+                it.write(" ")
+            it.write("$lhv")
+            it.newLine()
+        } else {
+            number.reverse()
+            divider = number[0]
+            for (i in 0 until number.size) {
+                if (divider >= rhv) {
+                    subtr = divider / rhv * rhv
+                    if (line == 0) {
+                        if (rank(divider) == rank(subtr))
+                            it.write(" ")
+                        it.write("$lhv | $rhv")
+                        it.newLine()
+                        ++line
+                    }
+                    if (spaceCount > 0)
+                        --spaceCount
+                    for (j in 1..spaceCount)
+                        it.write(" ")
+                    it.write("-$subtr")
+                    if (line == 1) {
+                        if (rank(divider) < rank(subtr)) {
+                            for (k in 1..rank(lhv) - rank(subtr) + 2)
+                                it.write(" ")
+                        } else {
+                            for (k in 1..rank(lhv) - rank(subtr) + 3)
+                                it.write(" ")
+                        }
+                        it.write((lhv / rhv).toString())
+                        ++line
+                    }
+                    it.newLine()
+                    for (j in 1..spaceCount)
+                        it.write(" ")
+                    for (j in 0..rank(subtr))
+                        it.write("-")
+                    it.newLine()
+                    divider -= subtr
+                    spaceCount += rank(subtr) - rank(divider) + 1
+                    for (j in 1..spaceCount)
+                        it.write(" ")
+                    if (divider == 0)
+                        ++spaceCount
+                    it.write("$divider")
+                    if (i != number.size - 1) {
+                        divider *= 10
+                        divider += number[i + 1]
+                        it.write(number[i + 1].toString())
+                    }
+                    it.newLine()
+                } else {
+                    if (line != 0 && line != 1) {
+                        for (j in 1..spaceCount + rank(divider) - 2)
+                            it.write(" ")
+                        it.write("-0")
+                        it.newLine()
+                        for (j in 1..spaceCount + rank(divider) - 2)
+                            it.write(" ")
+                        for (j in 0..1)
+                            it.write("-")
+                        it.newLine()
+                        for (j in 1..spaceCount)
+                            it.write(" ")
+                        it.write("$divider")
+                        if (i != number.size - 1) {
+                            divider *= 10
+                            divider += number[i + 1]
+                            it.write(number[i + 1].toString())
+                            it.newLine()
+                        }
+                    } else {
+                        divider *= 10
+                        divider += number[i + 1]
+                    }
+                }
+            }
+        }
+    }
+}
