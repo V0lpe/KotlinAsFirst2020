@@ -640,6 +640,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                         for (j in 1..spaceCount)
                             it.write(" ")
                         it.write("$divider")
+                        if (divider == 0)
+                            ++spaceCount
                         if (i != number.size - 1) {
                             divider *= 10
                             divider += number[i + 1]
