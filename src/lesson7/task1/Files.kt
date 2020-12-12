@@ -189,7 +189,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var maxLength = 0
         var wordsLength = 0
         var countSpace = 0
-        var words = listOf<String>()
+        var words = mutableListOf<String>()
         var spaceBetweenWords = 0
         var remainderSpace = 0
         for (line in File(inputName).readLines()) {
@@ -199,7 +199,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         for (line in File(inputName).readLines()) {
             wordsLength = 0
             countSpace = 0
-            words = line.trim().split(" ")
+            words = line.trim().split(" ").toMutableList()
+            while (words.contains(""))
+                words.remove("")
             if (words.isEmpty()) {
                 it.newLine()
                 continue
