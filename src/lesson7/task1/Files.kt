@@ -549,111 +549,91 @@ fun rank(num: Int): Int {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     File(outputName).bufferedWriter().use {
         val number = mutableListOf<Int>()
-        var num1 = lhv
-        var divider = 0
-        var subtr = 0
-        var spaceCount = 0
+        var numerator = lhv
+        var sub = 0
+        var space = 0
         var line = 0
-        while (num1 > 0) {
-            number.add(num1 % 10)
-            num1 /= 10
+        while (numerator > 0) {
+            number.add(numerator % 10)
+            numerator /= 10
         }
-        if (lhv < rhv) {
-            if (lhv <= 9)
-                it.write(" ")
-            it.write("$lhv | $rhv")
-            it.newLine()
-            for (j in 1..rank(lhv) - 2)
-                it.write(" ")
-            it.write("-0")
-            for (k in 1..3)
-                it.write(" ")
-            it.write("0")
-            it.newLine()
-            for (j in 1..rank(lhv) - 2)
-                it.write(" ")
-            it.write("--")
-            it.newLine()
-            if (lhv <= 9)
-                it.write(" ")
-            it.write("$lhv")
-            it.newLine()
-        } else {
-            number.reverse()
-            divider = number[0]
-            for (i in 0 until number.size) {
-                if (divider >= rhv) {
-                    subtr = divider / rhv * rhv
-                    if (line == 0) {
-                        if (rank(divider) == rank(subtr))
-                            it.write(" ")
-                        it.write("$lhv | $rhv")
-                        it.newLine()
-                        ++line
-                    }
-                    if (spaceCount > 0)
-                        --spaceCount
-                    for (j in 1..spaceCount)
-                        it.write(" ")
-                    it.write("-$subtr")
-                    if (line == 1) {
-                        if (rank(divider) < rank(subtr)) {
-                            for (k in 1..rank(lhv) - rank(subtr) + 2)
-                                it.write(" ")
-                        } else {
-                            for (k in 1..rank(lhv) - rank(subtr) + 3)
-                                it.write(" ")
-                        }
-                        it.write((lhv / rhv).toString())
-                        ++line
-                    }
-                    it.newLine()
-                    for (j in 1..spaceCount)
-                        it.write(" ")
-                    for (j in 0..rank(subtr))
-                        it.write("-")
-                    it.newLine()
-                    divider -= subtr
-                    spaceCount += rank(subtr) - rank(divider) + 1
-                    for (j in 1..spaceCount)
-                        it.write(" ")
-                    if (divider == 0)
-                        ++spaceCount
-                    it.write("$divider")
-                    if (i != number.size - 1) {
-                        divider *= 10
-                        divider += number[i + 1]
-                        it.write(number[i + 1].toString())
-                    }
-                    it.newLine()
-                } else {
-                    if (line != 0 && line != 1) {
-                        for (j in 1..spaceCount + rank(divider) - 2)
-                            it.write(" ")
-                        it.write("-0")
-                        it.newLine()
-                        for (j in 1..spaceCount + rank(divider) - 2)
-                            it.write(" ")
-                        for (j in 0..1)
-                            it.write("-")
-                        it.newLine()
-                        for (j in 1..spaceCount)
-                            it.write(" ")
-                        it.write("$divider")
-                        if (divider == 0)
-                            ++spaceCount
-                        if (i != number.size - 1) {
-                            divider *= 10
-                            divider += number[i + 1]
-                            it.write(number[i + 1].toString())
-                            it.newLine()
-                        }
-                    } else {
-                        divider *= 10
-                        divider += number[i + 1]
-                    }
-                }
+        number.reverse()
+        numerator = number[0]
+        for (i in 0 until number.size) {
+            if (numerator < rhv && line == 0 && lhv >= rhv) {
+                numerator *= 10
+                numerator += number[i + 1]
+                continue
             }
+            sub = numerator / rhv * rhv
+            if (sub == 0 && line == 0)
+                numerator = lhv
+            if (line == 0) {
+                if (rank(numerator) == rank(sub)) {
+                    ++space
+                    it.write(" ")
+                }
+                it.write("$lhv | $rhv")
+                it.newLine()
+                ++line
+            }
+            if (rank(numerator) > rank(sub))
+                space += rank(numerator) - rank(sub) - 1
+            if (rank(numerator) == rank(sub))
+                --space
+            for (j in 1..space)
+                it.write(" ")
+            it.write("-$sub")
+            if (line == 1) {
+                if (rank(numerator) == rank(sub) && sub != 0) {
+                    for (k in 1..rank(lhv) - rank(sub) + 3)
+                        it.write(" ")
+                }
+                if (rank(numerator) > rank(sub) && sub != 0) {
+                    for (k in 1..rank(lhv) - rank(sub) + 2)
+                        it.write(" ")
+                }
+                if (sub == 0)
+                    it.write("   ")
+                it.write((lhv / rhv).toString())
+                ++line
+            }
+            it.newLine()
+            if (rank(numerator) > rank(sub)) {
+                space -= rank(numerator) - rank(sub) - 1
+            }
+            for (j in 1..space)
+                it.write(" ")
+            if (rank(sub) + 1 >= rank(numerator)) {
+                for (j in 0..rank(sub))
+                    it.write("-")
+            } else {
+                for (j in 0 until rank(numerator))
+                    it.write("-")
+            }
+            it.newLine()
+            if (rank(numerator) == rank(sub))
+                ++space
+            numerator -= sub
+            if (numerator == 0)
+                --space
+            if (rank(numerator) == rank(sub) && numerator != lhv)
+                ++space
+            if (rank(numerator) < rank(sub))
+                space += rank(sub) - rank(numerator)
+            for (j in 1..space)
+                it.write(" ")
+            it.write("$numerator")
+            if (numerator == 0)
+                ++space
+            if (numerator == lhv)
+                break
+            if (i != number.size - 1) {
+                numerator *= 10
+                numerator += number[i + 1]
+                it.write(number[i + 1].toString())
+            }
+            it.newLine()
         }
     }
 }
