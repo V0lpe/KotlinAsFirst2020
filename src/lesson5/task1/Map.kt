@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -313,19 +315,19 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val IndexNumber = mutableMapOf<Int, Int>()
+    val indexNumber = mutableMapOf<Int, Int>()
     var firstIndex = -1
     var secondIndex = -1
     for (i in list.indices) {
-        if (IndexNumber.containsValue(list[i])) {
+        if (indexNumber.containsValue(list[i])) {
             secondIndex = i
             break
         } else {
-            IndexNumber[i] = number - list[i]
+            indexNumber[i] = number - list[i]
         }
     }
     if (secondIndex != -1) {
-        for ((first, second) in IndexNumber) {
+        for ((first, second) in indexNumber) {
             if (second == list[secondIndex]) {
                 firstIndex = first
                 break
@@ -356,35 +358,40 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun greatestBenefit(treasures: Map<String, Pair<Int, Int>>, benefits: Map<String, Double>, capacity: Int): String {
-    var name = ""
-    var maxBenefit = 0.0
-    for ((first, second) in treasures) {
-        if (benefits.getValue(first) > maxBenefit && second.first <= capacity) {
-            maxBenefit = benefits.getValue(first)
-            name = first
-        }
-    }
-    return name
+
+fun sumPair(pair1: Pair<Int, Set<String>>, pair2: Pair<Int, Set<String>>): Pair<Int, Set<String>> {
+    val payload = pair1.second.toMutableSet()
+    payload.addAll(pair2.second)
+    return Pair(pair1.first + pair2.first, payload)
+}
+
+fun maxPair(pair1: Pair<Int, Set<String>>, pair2: Pair<Int, Set<String>>): Pair<Int, Set<String>> {
+    return if (pair1.first > pair2.first)
+        pair1
+    else
+        pair2
 }
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val mapTreasure = treasures.toMutableMap()
-    val nameBenefit = mutableMapOf<String, Double>()
-    val nameTreasure = mutableSetOf<String>()
-    var name = ""
-    var availableSpace = capacity
+    val matrix = mutableListOf<MutableList<Pair<Int, Set<String>>>>()
+    val weight = mutableListOf<Int>()
+    val value = mutableListOf<Pair<Int, Set<String>>>()
     for ((first, second) in treasures) {
-        nameBenefit[first] = second.second.toDouble() / second.first
+        weight.add(second.first)
+        value.add(Pair(second.second, setOf(first)))
     }
-    while (true) {
-        name = greatestBenefit(mapTreasure, nameBenefit, availableSpace)
-        if (name == "")
-            break
-        nameTreasure.add(name)
-        availableSpace -= mapTreasure.getValue(name).first
-        mapTreasure.remove(name)
-        nameBenefit.remove(name)
+    matrix.add(mutableListOf())
+    for (i in 0..capacity) {
+        matrix[0].add(Pair(0, setOf()))
     }
-    return nameTreasure
+    for (i in 1..treasures.size) {
+        matrix.add(mutableListOf())
+        for (j in 0..capacity) {
+            if (weight[i - 1] > j)
+                matrix[i].add(matrix[i - 1][j])
+            else
+                matrix[i].add(maxPair(matrix[i - 1][j], sumPair(matrix[i - 1][j - weight[i - 1]], value[i - 1])))
+        }
+    }
+    return matrix[treasures.size][capacity].second
 }
