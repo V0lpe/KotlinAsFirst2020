@@ -65,12 +65,8 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
 fun deleteMarked(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            if (line.isNotEmpty()) {
-                if (line[0] != '_') {
-                    it.write(line)
-                    it.newLine()
-                }
-            } else {
+            if (!line.startsWith("_")) {
+                it.write(line)
                 it.newLine()
             }
         }
@@ -107,11 +103,14 @@ fun allContains(str: String, searchStr: String): Int {
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val countOfLine = mutableMapOf<String, Int>()
     var count = 0
+    var containsCount = 0
+    val reader = File(inputName).readLines()
     for (str in substrings) {
         count = 0
-        for (line in File(inputName).readLines()) {
-            if (allContains(line.toLowerCase(), str.toLowerCase()) != 0)
-                count += allContains(line.toLowerCase(), str.toLowerCase())
+        for (line in reader) {
+            containsCount = allContains(line.toLowerCase(), str.toLowerCase())
+            if (containsCount != 0)
+                count += containsCount
         }
         countOfLine[str] = count
     }
@@ -192,16 +191,16 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var words = mutableListOf<String>()
         var spaceBetweenWords = 0
         var remainderSpace = 0
-        for (line in File(inputName).readLines()) {
+        val reader = File(inputName).readLines()
+        for (line in reader) {
             if (maxLength < line.trim().length)
                 maxLength = line.trim().length
         }
-        for (line in File(inputName).readLines()) {
+        for (line in reader) {
             wordsLength = 0
             countSpace = 0
             words = line.trim().split(" ").toMutableList()
-            while (words.contains(""))
-                words.remove("")
+            words = words.filter { item -> item.isNotEmpty() }.toMutableList()
             if (words.isEmpty()) {
                 it.newLine()
                 continue
@@ -623,6 +622,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 ++space
             if (rank(numerator) < rank(sub))
                 space += rank(sub) - rank(numerator)
+            if (rank(sub) - rank(numerator) == 1 && rank(sub + numerator) - rank(sub) == 1)
+                ++space
             for (j in 1..space)
                 it.write(" ")
             it.write("$numerator")
