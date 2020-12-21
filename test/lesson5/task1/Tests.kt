@@ -334,8 +334,69 @@ class Tests {
     }
 
     @Test
+    fun sumPair() {
+        assertEquals(
+            Pair(8, setOf("0", "1")),
+            sumPair(Pair(3, setOf("0")), Pair(5, setOf("1")))
+        )
+    }
+
+    @Test
     @Tag("8")
     fun bagPacking() {
+        assertEquals(
+            setOf("9", "8", "7", "6", "5", "4", "3", "1", "0"),
+            bagPacking(
+                mapOf(
+                    "0" to (148 to 217),
+                    "1" to (469 to 216),
+                    "2" to (148 to 168),
+                    "3" to (1 to 59),
+                    "4" to (1 to 1),
+                    "5" to (1 to 1),
+                    "6" to (1 to 148),
+                    "7" to (1 to 1),
+                    "8" to (149 to 243),
+                    "9" to (1 to 1)
+                ),
+                914
+            )
+        )
+
+        assertEquals(
+            setOf("11", "10", "9", "8", "7", "6", "5", "4", "2", "1", "0"),
+            bagPacking(
+                mapOf(
+                    "0" to (1 to 1),
+                    "1" to (1 to 1),
+                    "2" to (217 to 385),
+                    "3" to (476 to 2),
+                    "4" to (1 to 1),
+                    "5" to (1 to 1),
+                    "6" to (1 to 1),
+                    "7" to (397 to 74),
+                    "8" to (1 to 1),
+                    "9" to (279 to 72),
+                    "10" to (149 to 42),
+                    "11" to (174 to 202)
+                ),
+                1687
+            )
+        )
+
+        assertEquals(
+            setOf("2", "0"),
+            bagPacking(
+                mapOf(
+                    "0" to (5 to 3),
+                    "1" to (10 to 5),
+                    "2" to (6 to 4),
+                    "3" to (5 to 2)
+                ),
+                14
+            )
+        )
+
         assertEquals(
             setOf("Кубок"),
             bagPacking(
@@ -358,21 +419,15 @@ class Tests {
             )
         )
         assertEquals(
-            setOf("9", "8", "7", "6", "5", "4", "3", "2", "0"),
+            setOf("2", "0"),
             bagPacking(
                 mapOf(
-                    "0" to (148 to 217),
-                    "1" to (469 to 216),
-                    "2" to (148 to 168),
-                    "3" to (1 to 59),
-                    "4" to (1 to 1),
-                    "5" to (1 to 1),
-                    "6" to (1 to 148),
-                    "7" to (1 to 1),
-                    "8" to (149 to 243),
-                    "9" to (1 to 1)
+                    "0" to (5 to 3),
+                    "1" to (10 to 5),
+                    "2" to (6 to 4),
+                    "3" to (5 to 2)
                 ),
-                914
+                14
             )
         )
     }

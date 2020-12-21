@@ -314,27 +314,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val indexNumber = mutableMapOf<Int, Int>()
-    var firstIndex = -1
-    var secondIndex = -1
+fun findSumOfTwo(list: List<Int>, sum: Int): Pair<Int, Int> {
+    val indexNumber = hashMapOf<Int, Int>()
     for (i in list.indices) {
-        if (indexNumber.containsValue(list[i])) {
-            secondIndex = i
-            break
+        val number = list[i]
+        if (indexNumber.contains(number)) {
+            return Pair(indexNumber.getValue(number), i)
         } else {
-            indexNumber[i] = number - list[i]
+            indexNumber[sum - number] = i
         }
     }
-    if (secondIndex != -1) {
-        for ((first, second) in indexNumber) {
-            if (second == list[secondIndex]) {
-                firstIndex = first
-                break
-            }
-        }
-    }
-    return Pair(firstIndex, secondIndex)
+    return Pair(-1, -1)
 }
 
 /**
@@ -365,12 +355,11 @@ fun sumPair(pair1: Pair<Int, Set<String>>, pair2: Pair<Int, Set<String>>): Pair<
     return Pair(pair1.first + pair2.first, payload)
 }
 
-fun maxPair(pair1: Pair<Int, Set<String>>, pair2: Pair<Int, Set<String>>): Pair<Int, Set<String>> {
-    return if (pair1.first > pair2.first)
+fun maxPair(pair1: Pair<Int, Set<String>>, pair2: Pair<Int, Set<String>>): Pair<Int, Set<String>> =
+    if (pair1.first > pair2.first)
         pair1
     else
         pair2
-}
 
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     val matrix = mutableListOf<MutableList<Pair<Int, Set<String>>>>()

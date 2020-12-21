@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import kotlin.math.min
 import java.lang.IllegalArgumentException as IllegalArgumentException
 
 // Урок 6: разбор строк, исключения
@@ -99,11 +101,7 @@ fun dateStrToDigit(str: String): String {
             "декабря" -> 12
             else -> 0
         }
-        return if (day in 1..31 && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) ||
-            day in 1..30 && (month == 4 || month == 6 || month == 9 || month == 11) ||
-            day in 1..28 && month == 2 ||
-            day == 29 && month == 2 && (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
-        )
+        return if (day in 1..daysInMonth(month, year))
             String.format("%02d.%02d.%d", day, month, year)
         else
             ""
@@ -199,7 +197,7 @@ fun plusMinus(expression: String): Int {
                 result -= parts[i + 1].toInt()
             if (parts[i] != "+" && parts[i] != "-") {
                 for (num in parts[i])
-                    if (num.toInt() !in 48..58)
+                    if (num.toInt() !in 48..57)                     // проверка на принадлежность символа к цифрам
                         throw IllegalArgumentException("Message")
             }
         }
@@ -311,3 +309,4 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
